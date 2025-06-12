@@ -4,6 +4,8 @@
 venv/
 ENV/
 .env.local
+.json
+.json.local
 
 # Python
 __pycache__/
