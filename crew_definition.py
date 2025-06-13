@@ -1,5 +1,6 @@
 from crewai import Agent, Crew, Task
 from logging_config import get_logger
+from gmail_tool import Draft_tool
 
 class ResearchCrew:
     def __init__(self, verbose=True, logger=None):
@@ -11,35 +12,26 @@ class ResearchCrew:
     def create_crew(self):
         self.logger.info("Creating research crew with agents")
         
-        researcher = Agent(
-            role='Research Analyst',
-            goal='Find and analyze key information',
-            backstory='Expert at extracting information',
+        draft_creator = Agent(
+            role='Gmail Draft Creator',
+            goal='Create Gmail Drafts to contacts from input',
+            backstory='Expert at Reading and identifying contact info and drafts, then copying those drafts to new gmail drafts to send to contacts',
             verbose=self.verbose
         )
 
-        writer = Agent(
-            role='Content Summarizer',
-            goal='Create clear summaries from research',
-            backstory='Skilled at transforming complex information',
-            verbose=self.verbose
-        )
 
         self.logger.info("Created research and writer agents")
 
         crew = Crew(
-            agents=[researcher, writer],
+            agents=[draft_creator],
             tasks=[
                 Task(
-                    description='Research: {text}',
-                    expected_output='Detailed research findings about the topic',
-                    agent=researcher
-                ),
-                Task(
-                    description='Write summary',
-                    expected_output='Clear and concise summary of the research findings',
-                    agent=writer
+                    description='Analyze {text} and create a gmail draft to the recipient company, the draft body being the pre-generated email in the input which is to be identified (will most likely be after a header like "Email: "), the "contact" and "body" fields of the tool being the provided email address and email bodies respectively',
+                    expected_output='A Gmail draft containing the provided email body addressed to the recipient',
+                    agent=draft_creator,
+                    tools=[Draft_tool()]
                 )
+
             ]
         )
         self.logger.info("Crew setup completed")

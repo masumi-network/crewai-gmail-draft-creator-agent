@@ -79,6 +79,12 @@ async def execute_crew_task(input_data: str) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 # 1) Start Job (MIP-003: /start_job)
 # ─────────────────────────────────────────────────────────────────────────────
+
+@app.post("/force_run")
+async def force_run(data:StartJobRequest):
+    result = await execute_crew_task(data.input_data.get("text")) 
+    return result
+
 @app.post("/start_job")
 async def start_job(data: StartJobRequest):
     """ Initiates a job and creates a payment request """

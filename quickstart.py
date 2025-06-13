@@ -41,7 +41,7 @@ def main():
             with open("token.json", "w") as token:
                 token.write(creds.to_json())
 
-    def gmail_create_draft():
+    def gmail_create_draft(contact : str):
         
         try:
             # create gmail api client
@@ -51,7 +51,7 @@ def main():
 
             message.set_content("This is automated draft mail")
 
-            message["To"] = "gduser1@workspacesamples.dev"
+            message["To"] = contact
             message["From"] = "gduser2@workspacesamples.dev"
             message["Subject"] = "Automated draft"
 
